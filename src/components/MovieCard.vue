@@ -2,12 +2,9 @@
 import GenrePill from "./GenrePill.vue";
 import { defineProps } from "vue";
 import { Movie } from "../App.vue";
+import StarRating from "./StarRating.vue";
 
-defineProps<{ movie: Movie }>();
-
-function formattedRating(rating: number) {
-  return `Rating: ${rating}/5 ${"⭐️".repeat(rating)}`;
-}
+const props = defineProps<{ movie: Movie }>();
 </script>
 
 <template>
@@ -26,8 +23,9 @@ function formattedRating(rating: number) {
       <GenrePill :movie="movie" />
     </div>
     <p class="mb-4">{{ movie.description }}</p>
-    <p class="mt-full self-end">
-      {{ formattedRating(movie.rating) }}
-    </p>
+    <StarRating
+      :rating="movie.rating"
+      @update-rating="(newRating) => (movie.rating = newRating)"
+    />
   </article>
 </template>
