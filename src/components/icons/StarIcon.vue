@@ -4,14 +4,22 @@ defineProps({
     type: String,
     default: "#ccc",
   },
+  width: {
+    type: String,
+    default: "1.5em",
+  },
+  height: {
+    type: String,
+    default: "1.5em",
+  },
 });
 </script>
 
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width="1.5em"
-    height="1.5em"
+    :width="width"
+    :height="height"
     viewBox="0 0 24 24"
     class="star-icon"
   >

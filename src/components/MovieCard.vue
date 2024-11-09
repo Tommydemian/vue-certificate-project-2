@@ -1,10 +1,17 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 import GenrePill from "./GenrePill.vue";
-import { defineProps } from "vue";
-import { Movie } from "../App.vue";
 import StarRating from "./StarRating.vue";
+import DecoStar from "./DecoStar.vue";
+
+import { Movie } from "../App.vue";
 
 const props = defineProps<{ movie: Movie }>();
+
+const movieRating = computed(() =>
+  props.movie.rating ? props.movie.rating : "-",
+);
 </script>
 
 <template>
@@ -12,6 +19,8 @@ const props = defineProps<{ movie: Movie }>();
     class="relative bg-white p-4 rounded-md flow-content w-full h-full grid"
   >
     <div class="w-full h-[500px]">
+      <DecoStar :movie-rating="movieRating" />
+
       <img
         class="w-full h-full object-cover mx-auto"
         :src="movie.image"

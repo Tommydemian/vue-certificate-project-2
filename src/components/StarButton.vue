@@ -8,5 +8,3 @@ defineProps<{ onClickStars: () => void }>();
     <Star />
   </button>
 </template>
-
-<style lang="css" scoped></style>
