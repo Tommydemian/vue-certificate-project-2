@@ -15,14 +15,40 @@ const newMovieData = ref<Movie>({
   rating: 0,
 });
 
+const errors = ref<Record<string, string>>({});
+
+function validateForm() {
+  errors.value = {};
+
+  if (!newMovieData.value.name.trim()) {
+    errors.value.name = "Name is required";
+  }
+
+  if (newMovieData.value.genres.length === 0) {
+    errors.value.genres = "Select at least one genre";
+  }
+
+  const numberOfErrors = Object.keys(errors.value).length;
+  const isValid = numberOfErrors === 0;
+  return isValid;
+}
+
 const props = defineProps<{ closeModal: () => void }>();
 
-const emit = defineEmits<{ (e: "new-movie-data", movie: Movie): void }>();
+const emits = defineEmits<{
+  (e: "new-movie-data", movie: Movie): void;
+  (e: "cancel"): void;
+}>();
 
 function handleSubmit() {
-  emit("new-movie-data", newMovieData.value);
+  emits("new-movie-data", newMovieData.value);
   props.closeModal();
   console.log(newMovieData.value);
+}
+
+function handleCancel() {
+  newMovieData.value = { ...newMovieData.value, id: Math.random() };
+  emits("cancel");
 }
 </script>
 
@@ -66,23 +92,27 @@ function handleSubmit() {
     <label class="font-semibold leading-[0] flex items-center" for="genre"
       >Genre</label
     >
-
-    <select
-      name="genres"
-      id="genres"
-      class="text-gray-800 p-2"
-      v-model="newMovieData.genres"
-      multiple="true"
-    >
-      <option v-for="genre in movieGenres" :value="genre">
+    <div class="flex gap-4 items-center">
+      <label
+        v-for="genre in movieGenres"
+        :key="genre"
+        class="flex gap-2 cursor-pointer text-gray-50"
+      >
+        <input
+          type="checkbox"
+          :value="genre"
+          v-model="newMovieData.genres"
+          class="cursor-pointer"
+        />
         {{ genre }}
-      </option>
-    </select>
-    <div class="flex items-center gap-2">
+      </label>
+    </div>
+
+    <!-- <div class="flex items-center gap-2">
       <p :key="selectedGenre" v-for="selectedGenre in newMovieData.genres">
         {{ selectedGenre }}
       </p>
-    </div>
+    </div> -->
 
     <div class="flex items-center justify-normal gap-2">
       <label
@@ -111,7 +141,7 @@ function handleSubmit() {
     />
 
     <div class="flex justify-between items-center">
-      <button>cancel</button>
+      <button type="button" @click="handleCancel">cancel</button>
       <button type="submit">Add Movie</button>
     </div>
   </form>

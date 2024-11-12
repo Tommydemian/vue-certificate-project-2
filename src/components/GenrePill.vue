@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
 import { Movie } from "../App.vue";
 
 defineProps<{ movie: Movie }>();

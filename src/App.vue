@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { computed, watch, Teleport, Ref } from "vue";
+import { computed, watch, Teleport, Ref, ref } from "vue";
 import MovieCard from "./components/MovieCard.vue";
 import GenreFilter from "./components/GenreFilter.vue";
 import { MovieGenres } from "./components/GenreFilter.vue";
 import MainButton from "./components/MainButton.vue";
 import ModalOverlay from "./components/ModalOverlay.vue";
 import MovieForm from "./components/MovieForm.vue";
+
+import { useMoviesStore } from "./store/movies";
 
 export type Movie = {
   id: number;
@@ -19,44 +21,43 @@ export type Movie = {
 
 export type Movies = Movie[];
 
-import { ref } from "vue";
-import { items } from "./movies.json";
-
-const newMovieData = ref<Movie>();
-console.log(newMovieData);
-
-const movies = ref<Movies>(items);
+const store = useMoviesStore();
 const filterAgainst = ref<MovieGenres>();
-
 const isModalOpen = ref(false);
 
+// toggle Modal
 function toggleModalOpen() {
   isModalOpen.value = !isModalOpen.value;
 }
 
-const moviesFilteredByGenre = computed(() => {
-  if (!filterAgainst.value) return movies.value;
-  return movies.value.filter((movie) =>
-    movie.genres.includes(filterAgainst.value!),
-  );
-});
+// filtered Movies Computed
+const filteredMovies = computed(() =>
+  store.moviesFilteredByGenre(filterAgainst.value),
+);
 </script>
 
 <template>
   <main class="relative max-w-[80rem] mx-auto p-4">
-    <GenreFilter
-      @selected-genre="
-        (selectedGenre) => {
-          console.log('Received genre:', selectedGenre);
-          filterAgainst = selectedGenre;
-        }
-      "
-    />
-    <ul class="grid grid-cols-3 gap-8" role="list">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center gap-10 text-gray-50 font-semibold text-xl">
+        <p>Total Movies: {{ store.totalMovies }}</p>
+        <span>/</span>
+        <p>Average Rating: {{ store.avgRating.toFixed(1) }}</p>
+      </div>
+      <GenreFilter
+        @selected-genre="
+          (selectedGenre) => {
+            console.log('Received genre:', selectedGenre);
+            filterAgainst = selectedGenre;
+          }
+        "
+      />
+    </div>
+    <ul class="grid grid-cols-3 gap-8 mt-10" role="list">
       <li
         role="listitem"
         :key="movie.id"
-        v-for="movie in moviesFilteredByGenre"
+        v-for="movie in filteredMovies"
         class="w-full h-full"
       >
         <MovieCard :movie="movie" />
@@ -68,11 +69,12 @@ const moviesFilteredByGenre = computed(() => {
       <Teleport to="body">
         <article
           v-if="isModalOpen"
-          class="grid fixed-center bg-gray-900 rounded-md p-4 text-gray-50 w-[60%] h-fit"
+          class="grid fixed-center bg-gray-900 rounded-md p-4 text-gray-50 w-[60%] h-fit border border-gray-300"
         >
           <MovieForm
             :close-modal="toggleModalOpen"
-            @new-movie-data="(data) => (newMovieData = data)"
+            @new-movie-data="(data) => store.createMovie(data)"
+            @cancel="toggleModalOpen"
           />
           <!-- <MainButton @button-click="toggleModalOpen" button-text="Close" /> -->
         </article>

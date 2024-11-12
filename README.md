@@ -58,3 +58,16 @@ Clicking the cancel button should hide the form for the user.
 💡 HINT: You can make up any genres you like
 
 💡 HINT: You can visit imdb.com to find movie descriptions, images, etc for testing your form
+
+Here are my suggestions for implementation. Would you like me to guide you through:
+
+Adding validation handling and error display?
+Implementing proper cancel functionality?
+Adding form reset functionality?
+Improving the buttons styling to match your MainButton component?
+
+Which of these areas would you like to tackle first?
+Also, I notice you're displaying selected genres below the select. Would you like to:
+
+Keep this display but style it better with pills similar to your MovieCard?
+Or handle the multiple select display differently?
