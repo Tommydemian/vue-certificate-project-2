@@ -11,9 +11,11 @@
   "dependencies": {
     "@heroicons/vue": "^2.1.5",
     "@tailwindcss/typography": "^0.5.15",
+    "@vueuse/core": "^11.2.0",
     "happy-dom": "^15.7.4",
     "pinia": "^2.2.6",
-    "vue": "^3.5.8"
+    "vue": "^3.5.8",
+    "vue-router": "^4.4.5"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",
@@ -28,6 +30,7 @@
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.12",
     "vite": "^5.4.7",
+    "vite-plugin-vue-devtools": "^7.6.4",
     "vitest": "^2.1.1"
   },
   "engines": {

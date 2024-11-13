@@ -1,5 +1,14 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import {
+  onMounted,
+  ref,
+  watch,
+  watchEffect,
+  onBeforeMount,
+  onBeforeUnmount,
+  onUnmounted,
+  useTemplateRef,
+} from "vue";
 import { Movie } from "../App.vue";
 import { MovieGenres } from "./GenreFilter.vue";
 
@@ -37,6 +46,16 @@ function handleCancel() {
   formData.value = { ...initState };
   emits("cancel");
 }
+
+const nameInput = useTemplateRef("name-input");
+
+watchEffect(() => {
+  if (nameInput.value) {
+    nameInput.value.focus();
+  }
+});
+
+// onMounted(() => console.log(nameInput.value));
 </script>
 
 <template>
@@ -48,6 +67,7 @@ function handleCancel() {
       type="text"
       name="name"
       id="name"
+      ref="name-input"
       required
       :value="formData.name"
       @input="formData.name = ($event.target as HTMLInputElement).value"

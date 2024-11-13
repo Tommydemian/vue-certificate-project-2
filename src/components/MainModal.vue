@@ -1,18 +1,30 @@
-<!-- <script setup lang="ts">
-import MainButton from "./MainButton.vue";
-defineProps<{ isModalOpen: boolean; handleModalOpen: () => void }>();
+<!-- MainModal.vue -->
+<script setup lang="ts">
+defineProps<{ isOpen: boolean }>();
 </script>
 
 <template>
   <Teleport to="body">
-    <article
-      v-if="isModalOpen"
-      class="bg-red-400 w-[400px] h-[400px] fixed-center"
-    >
-      <p>Hello from the modal!</p>
-      <MainButton @button-click="handleModalOpen" button-text="Close" />
-    </article>
+    <Transition name="fade">
+      <article
+        v-if="isOpen"
+        class="grid fixed-center bg-gray-900 rounded-md p-4 text-gray-50 w-[60%] h-fit border border-gray-300"
+        ref="modal"
+      >
+        <slot></slot>
+      </article>
+    </Transition>
   </Teleport>
 </template>
 
-<style lang="css" scoped></style> -->
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

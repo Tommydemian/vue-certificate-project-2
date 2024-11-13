@@ -27,7 +27,7 @@ function handleRating(index?: number) {
   });
 }
 
-onMounted(handleRating());
+onMounted(() => handleRating());
 
 function handleUpdate(index: number) {
   handleRating(index);

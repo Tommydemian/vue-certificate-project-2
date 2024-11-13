@@ -1,22 +1,12 @@
 <script setup lang="ts">
-defineProps<{ isModalOpen: boolean }>();
+defineProps<{ isOpen: boolean }>();
 </script>
 
 <template>
-  <div v-if="isModalOpen" class="modal-overlay"></div>
+  <div
+    v-if="isOpen"
+    class="inset-0 fixed bg-gray-900/50 z-20 backdrop-blur-[2px]"
+  />
 </template>
 
-<style lang="css" scoped>
-.modal-overlay {
-  transition:
-    background-color 2s ease-in-out,
-    backdrop-filter 2s ease-in-out;
-}
-.modal-overlay {
-  background-color: rgba(0, 0, 0, 0.24);
-  backdrop-filter: blur(5px);
-  inset: 0;
-  position: absolute;
-  z-index: 20;
-}
-</style>
+<style lang="css" scoped></style>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, Teleport } from "vue";
+import { computed, defineAsyncComponent, hydrateOnVisible } from "vue";
 
 import GenrePill from "./GenrePill.vue";
 import StarRating from "./StarRating.vue";
@@ -8,6 +8,12 @@ import MovieCardOperationsButton from "./MovieCardOperationsButton.vue";
 import TrashIcon from "./icons/TrashIcon.vue";
 import EditIcon from "./icons/EditIcon.vue";
 import MovieForm from "./MovieForm.vue";
+import ModalOverlay from "./ModalOverlay.vue";
+import MainModal from "./MainModal.vue";
+// const AsyncModal = defineAsyncComponent({
+//   loader: () => import("./MainModal.vue"),
+//   hydrate: hydrateOnVisible(),
+// });
 
 import { Movie } from "../App.vue";
 import { useMoviesStore } from "../store/movies";
@@ -51,32 +57,30 @@ function handleSubmit(updatedMovie: Movie) {
         :rating="movie.rating"
         @update-rating="(newRating) => (movie.rating = newRating)"
       />
-      <MovieCardOperationsButton
-        operation-type="delete-movie"
-        @delete-movie="store.removeMovie(movie.id)"
-      >
-        <TrashIcon />
-      </MovieCardOperationsButton>
+      <div aria-label="movie card operations." class="flex gap-[0.75rem]">
+        <MovieCardOperationsButton
+          operation-type="delete-movie"
+          @delete-movie="store.removeMovie(movie.id)"
+        >
+          <TrashIcon />
+        </MovieCardOperationsButton>
 
-      <MovieCardOperationsButton
-        operation-type="edit-movie"
-        @edit-movie="toggleModalOpen"
-      >
-        <EditIcon />
-      </MovieCardOperationsButton>
+        <MovieCardOperationsButton
+          operation-type="edit-movie"
+          @edit-movie="toggleModalOpen"
+        >
+          <EditIcon />
+        </MovieCardOperationsButton>
+      </div>
     </div>
-    <Teleport to="body">
-      <article
-        v-if="isModalOpen"
-        class="grid fixed-center bg-gray-900 rounded-md p-4 text-gray-50 w-[60%] h-fit border border-gray-300"
-      >
-        <MovieForm
-          :close-modal="toggleModalOpen"
-          :movie="movie"
-          @submit="(movieData) => handleSubmit(movieData)"
-          @cancel="toggleModalOpen"
-        />
-      </article>
-    </Teleport>
+    <!-- <ModalOverlay :is-open="isModalOpen" /> -->
+    <MainModal :is-open="isModalOpen">
+      <MovieForm
+        :close-modal="toggleModalOpen"
+        :movie="movie"
+        @submit="(movieData) => handleSubmit(movieData)"
+        @cancel="toggleModalOpen"
+      />
+    </MainModal>
   </article>
 </template>

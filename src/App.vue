@@ -1,11 +1,16 @@
 <script lang="ts" setup>
-import { computed, watch, Teleport, Ref, ref } from "vue";
+import { computed, ref, defineAsyncComponent, hydrateOnVisible } from "vue";
 import MovieCard from "./components/MovieCard.vue";
 import GenreFilter from "./components/GenreFilter.vue";
 import { MovieGenres } from "./components/GenreFilter.vue";
 import MainButton from "./components/MainButton.vue";
 import ModalOverlay from "./components/ModalOverlay.vue";
 import MovieForm from "./components/MovieForm.vue";
+import MainModal from "./components/MainModal.vue";
+// const AsyncModal = defineAsyncComponent({
+//   loader: () => import("./components/MainModal.vue"),
+//   hydrate: hydrateOnVisible(),
+// });
 
 import { useMoviesStore } from "./store/movies";
 import { useToggle } from "./composables/useToggle";
@@ -63,40 +68,14 @@ const filteredMovies = computed(() =>
     </ul>
     <div class="flex justify-center items-center mt-4">
       <MainButton button-text="Add Movie" @button-click="toggleModalOpen" />
-      <ModalOverlay :is-modal-open="isModalOpen" />
-      <Teleport to="body">
-        <article
-          v-if="isModalOpen"
-          class="grid fixed-center bg-gray-900 rounded-md p-4 text-gray-50 w-[60%] h-fit border border-gray-300"
-        >
-          <MovieForm
-            :close-modal="toggleModalOpen"
-            @new-movie-data="(data) => store.createMovie(data)"
-            @cancel="toggleModalOpen"
-          />
-          <!-- <MainButton @button-click="toggleModalOpen" button-text="Close" /> -->
-        </article>
-      </Teleport>
+      <ModalOverlay :is-open="isModalOpen" />
+      <MainModal :is-open="isModalOpen">
+        <MovieForm
+          :close-modal="toggleModalOpen"
+          @new-movie-data="(data) => store.createMovie(data)"
+          @cancel="toggleModalOpen"
+        />
+      </MainModal>
     </div>
   </main>
 </template>
-
-<style lang="css">
-.img-ratio {
-  aspect-ratio: 16/9;
-}
-.flow-content > * {
-  margin-bottom: 0.75rem;
-}
-.flow-content > *:last-child {
-  margin-bottom: 0;
-}
-
-.fixed-center {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 30;
-}
-</style>
