@@ -1,81 +1,27 @@
-<script lang="ts" setup>
-import { computed, ref, defineAsyncComponent, hydrateOnVisible } from "vue";
-import MovieCard from "./components/MovieCard.vue";
-import GenreFilter from "./components/GenreFilter.vue";
-import { MovieGenres } from "./components/GenreFilter.vue";
-import MainButton from "./components/MainButton.vue";
-import ModalOverlay from "./components/ModalOverlay.vue";
-import MovieForm from "./components/MovieForm.vue";
-import MainModal from "./components/MainModal.vue";
-// const AsyncModal = defineAsyncComponent({
-//   loader: () => import("./components/MainModal.vue"),
-//   hydrate: hydrateOnVisible(),
-// });
-
-import { useMoviesStore } from "./store/movies";
-import { useToggle } from "./composables/useToggle";
-
-export type Movie = {
-  id: number;
-  name: string;
-  description: string;
-  image: string;
-  rating: number;
-  genres: string[];
-  inTheaters: boolean;
-};
-
-export type Movies = Movie[];
-
-const store = useMoviesStore();
-const filterAgainst = ref<MovieGenres>();
-
-// modal state and toggle
-const { state: isModalOpen, toggle: toggleModalOpen } = useToggle(false);
-
-// filtered Movies Computed
-const filteredMovies = computed(() =>
-  store.moviesFilteredByGenre(filterAgainst.value),
-);
+<script setup lang="ts">
+import { RouterView, RouterLink } from "vue-router";
+import MainContainer from "./components/MainContainer.vue";
 </script>
 
+<!-- App.vue with layout -->
 <template>
-  <main class="relative max-w-[80rem] mx-auto p-4">
-    <div class="flex justify-between items-center">
-      <div class="flex items-center gap-10 text-gray-50 font-semibold text-xl">
-        <p>Total Movies: {{ store.totalMovies }}</p>
-        <span>/</span>
-        <p>Average Rating: {{ store.avgRating.toFixed(1) }}</p>
-      </div>
-      <GenreFilter
-        @selected-genre="
-          (selectedGenre) => {
-            console.log('Received genre:', selectedGenre);
-            filterAgainst = selectedGenre;
-          }
-        "
-      />
-    </div>
-    <ul class="grid grid-cols-3 gap-8 mt-10" role="list">
-      <li
-        role="listitem"
-        :key="movie.id"
-        v-for="movie in filteredMovies"
-        class="w-full h-full"
-      >
-        <MovieCard :movie="movie" />
-      </li>
-    </ul>
-    <div class="flex justify-center items-center mt-4">
-      <MainButton button-text="Add Movie" @button-click="toggleModalOpen" />
-      <ModalOverlay :is-open="isModalOpen" />
-      <MainModal :is-open="isModalOpen">
-        <MovieForm
-          :close-modal="toggleModalOpen"
-          @new-movie-data="(data) => store.createMovie(data)"
-          @cancel="toggleModalOpen"
-        />
-      </MainModal>
-    </div>
-  </main>
+  <div class="app">
+    <header>
+      <MainContainer>
+        <nav class="flex text-white">
+          <RouterLink to="/"></RouterLink>
+
+          <!-- Other nav links -->
+        </nav>
+      </MainContainer>
+    </header>
+
+    <router-view v-slot="{ Component }">
+      <transition name="fade" mode="out-in">
+        <component :is="Component" :key="$route.path" />
+      </transition>
+    </router-view>
+    <!-- Navigation or header if needed -->
+    <!-- Footer if needed -->
+  </div>
 </template>

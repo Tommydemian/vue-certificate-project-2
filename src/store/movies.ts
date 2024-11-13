@@ -42,5 +42,11 @@ export const useMoviesStore = defineStore("movies", {
         movie.id === updatedMovie.id ? { ...updatedMovie } : movie,
       );
     },
+    getMovie(movieId: number): Movie {
+      const selectedMovie = this.movies.find(
+        (movie: Movie) => movie.id === movieId,
+      );
+      return selectedMovie ? selectedMovie : null;
+    },
   },
 });

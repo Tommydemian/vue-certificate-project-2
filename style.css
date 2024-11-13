@@ -10,6 +10,11 @@
     transform: translate(-50%, -50%);
     z-index: 30;
   }
+
+  .container {
+    width: min(100% - 1.5rem, 80rem);
+    margin-inline: auto;
+  }
 }
 
 /* Component styles should go in the components layer */

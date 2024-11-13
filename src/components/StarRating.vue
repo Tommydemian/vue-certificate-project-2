@@ -37,7 +37,9 @@ function handleUpdate(index: number) {
 
 <template>
   <div class="flex items-center">
-    <p class="mr-2 font-semibold">Rating: {{ `${rating}/5` }}</p>
+    <p class="mr-2 font-semibold whitespace-nowrap">
+      Rating: {{ `${rating}/5` }}
+    </p>
     <button
       :key="index"
       v-for="(el, index) in stars"

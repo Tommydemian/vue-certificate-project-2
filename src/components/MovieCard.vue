@@ -7,6 +7,7 @@ import DecoStar from "./DecoStar.vue";
 import MovieCardOperationsButton from "./MovieCardOperationsButton.vue";
 import TrashIcon from "./icons/TrashIcon.vue";
 import EditIcon from "./icons/EditIcon.vue";
+import EyeIcon from "./icons/EyeIcon.vue";
 import MovieForm from "./MovieForm.vue";
 import ModalOverlay from "./ModalOverlay.vue";
 import MainModal from "./MainModal.vue";
@@ -52,12 +53,12 @@ function handleSubmit(updatedMovie: Movie) {
       <GenrePill :movie="movie" />
     </div>
     <p class="mb-4">{{ movie.description }}</p>
-    <div class="flex justify-between items-center">
+    <div class="flex justify-between items-center flex-wrap">
       <StarRating
         :rating="movie.rating"
         @update-rating="(newRating) => (movie.rating = newRating)"
       />
-      <div aria-label="movie card operations." class="flex gap-[0.75rem]">
+      <div aria-label="movie card operations." class="flex gap-[0.75rem] mt-2">
         <MovieCardOperationsButton
           operation-type="delete-movie"
           @delete-movie="store.removeMovie(movie.id)"
@@ -70,6 +71,10 @@ function handleSubmit(updatedMovie: Movie) {
           @edit-movie="toggleModalOpen"
         >
           <EditIcon />
+        </MovieCardOperationsButton>
+
+        <MovieCardOperationsButton :linkto="true" :id="movie.id">
+          <EyeIcon />
         </MovieCardOperationsButton>
       </div>
     </div>
