@@ -37,9 +37,10 @@ export const useMoviesStore = defineStore("movies", {
     removeMovie(movieId: number) {
       this.movies = this.movies.filter((el: Movie) => el.id !== movieId);
     },
-    editMovie(movieId: number) {
-      const selectedMovie = this.movies.find((el: Movie) => el.id === movieId);
-      return selectedMovie;
+    updateMovie(updatedMovie: Movie) {
+      this.movies = this.movies.map((movie: Movie) =>
+        movie.id === updatedMovie.id ? { ...updatedMovie } : movie,
+      );
     },
   },
 });

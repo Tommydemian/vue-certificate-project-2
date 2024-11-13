@@ -1,20 +1,31 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, Teleport } from "vue";
 
 import GenrePill from "./GenrePill.vue";
 import StarRating from "./StarRating.vue";
 import DecoStar from "./DecoStar.vue";
+import MovieCardOperationsButton from "./MovieCardOperationsButton.vue";
+import TrashIcon from "./icons/TrashIcon.vue";
+import EditIcon from "./icons/EditIcon.vue";
+import MovieForm from "./MovieForm.vue";
 
 import { Movie } from "../App.vue";
 import { useMoviesStore } from "../store/movies";
+import { useToggle } from "../composables/useToggle";
 
 const props = defineProps<{ movie: Movie }>();
 
 const store = useMoviesStore();
+const { state: isModalOpen, toggle: toggleModalOpen } = useToggle(false);
 
 const movieRating = computed(() =>
   props.movie.rating ? props.movie.rating : "-",
 );
+
+function handleSubmit(updatedMovie: Movie) {
+  store.updateMovie(updatedMovie);
+  toggleModalOpen();
+}
 </script>
 
 <template>
@@ -40,27 +51,32 @@ const movieRating = computed(() =>
         :rating="movie.rating"
         @update-rating="(newRating) => (movie.rating = newRating)"
       />
-      <div
-        class="rounded-full bg-slate-200 p-2 cursor-pointer border border-slate-500 transition-colors hover:bg-slate-100"
-        @click="store.removeMovie(movie.id)"
+      <MovieCardOperationsButton
+        operation-type="delete-movie"
+        @delete-movie="store.removeMovie(movie.id)"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="1.7em"
-          height="1.7em"
-          viewBox="0 0 24 24"
-          class="transition-colors"
-        >
-          <path
-            fill="none"
-            stroke="#A3A3A3"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"
-          />
-        </svg>
-      </div>
+        <TrashIcon />
+      </MovieCardOperationsButton>
+
+      <MovieCardOperationsButton
+        operation-type="edit-movie"
+        @edit-movie="toggleModalOpen"
+      >
+        <EditIcon />
+      </MovieCardOperationsButton>
     </div>
+    <Teleport to="body">
+      <article
+        v-if="isModalOpen"
+        class="grid fixed-center bg-gray-900 rounded-md p-4 text-gray-50 w-[60%] h-fit border border-gray-300"
+      >
+        <MovieForm
+          :close-modal="toggleModalOpen"
+          :movie="movie"
+          @submit="(movieData) => handleSubmit(movieData)"
+          @cancel="toggleModalOpen"
+        />
+      </article>
+    </Teleport>
   </article>
 </template>

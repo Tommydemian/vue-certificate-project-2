@@ -8,6 +8,7 @@ import ModalOverlay from "./components/ModalOverlay.vue";
 import MovieForm from "./components/MovieForm.vue";
 
 import { useMoviesStore } from "./store/movies";
+import { useToggle } from "./composables/useToggle";
 
 export type Movie = {
   id: number;
@@ -23,12 +24,9 @@ export type Movies = Movie[];
 
 const store = useMoviesStore();
 const filterAgainst = ref<MovieGenres>();
-const isModalOpen = ref(false);
 
-// toggle Modal
-function toggleModalOpen() {
-  isModalOpen.value = !isModalOpen.value;
-}
+// modal state and toggle
+const { state: isModalOpen, toggle: toggleModalOpen } = useToggle(false);
 
 // filtered Movies Computed
 const filteredMovies = computed(() =>

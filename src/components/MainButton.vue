@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { withDefaults } from "vue";
 withDefaults(defineProps<{ onButtonClick: () => void; buttonText: string }>(), {
   buttonText: "Add Movie",
 });
